@@ -77,19 +77,22 @@ d3.json(link).then(function(data) {
   });
 
   legend.onAdd = function() {
-    var div = L.DomUtil.create("div", "info legend");
+    let depthrange = [0, 10, 20, 40, 60, 80];
+    let colors = ["#ffcccc", "#ff9999", "#ff6666", "#ff6600","#ff3300", "#993300"];
+    var div = L.DomUtil.create("div", "legend");
 
-    var depthrange = [0, 10, 20, 40, 60, 80];
-    var colors = ["#ffcccc", "#ff9999", "#ff6666", "#ff6600","#ff3300", "#993300"];
+    
 
     // Insert depth range colors into legend HTML
-    for (var i = 0; i<depthrange.length; i++) {
+    for (var i = 0; i<depthrange.length -1 ; i++) {
       div.innerHTML +=
       "<i style='background: " + colors[i] + "'></i> " +
-      depthrange[i] + (depthrange[i + 1] ? "&ndash;" + depthrange[i + 1] + "<br>" : "+");
+      depthrange[i] + "&ndash;"+ depthrange[i + 1]  + "<br>" ;
     }
+    div.innerHTML += "<i style='background: " + colors[depthrange.length-1] + "'></i> " +
+    depthrange[depthrange.length-1] + "+";
     return div;
-
+   
   };
 
   legend.addTo(myMap)
