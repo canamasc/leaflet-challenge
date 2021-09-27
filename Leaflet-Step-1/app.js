@@ -70,20 +70,31 @@ d3.json(link).then(function(data) {
   }).addTo(myMap);
   }
 
+
+  // Legend
+  var legend = L.control({
+    position: "bottomright"
+  });
+
+  legend.onAdd = function() {
+    var div = L.DomUtil.create("div", "info legend");
+
+    var depthrange = [0, 10, 20, 40, 60, 80];
+    var colors = ["#ffcccc", "#ff9999", "#ff6666", "#ff6600","#ff3300", "#993300"];
+
+    // Insert depth range colors into legend HTML
+    for (var i = 0; i<depthrange.length; i++) {
+      div.innerHTML +=
+      "<i style='background: " + colors[i] + "'></i> " +
+      depthrange[i] + (depthrange[i + 1] ? "&ndash;" + depthrange[i + 1] + "<br>" : "+");
+    }
+    return div;
+
+  };
+
+  legend.addTo(myMap)
+
 });
 
-  // var heatarray = [];
-  // for (var i =0; i < data.length; i++){
-  //     var loc = data.features[i].geometry.coordinates;
-  //     var depth = loc[2];
-      
-  //     heatarray.push([loc[1], loc[0]]);
 
 
-  // }
-  // var heat = L.heatLayer(heatarray, {
-  //   radius: 500,
-  //   blur: 35
-  // }).addTo(myMap);
-
-  // console.log(data.features[0].geometry.coordinates[2]);
