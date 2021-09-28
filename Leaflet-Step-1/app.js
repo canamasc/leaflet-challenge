@@ -12,63 +12,90 @@ var myMap = L.map("map", {
   // Use this link to get the GeoJSON data.
 var link = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson";
 
+
+
+
+function chooseColor(depth){
+  console.log("depth: ");
+  console.log(depth);
+  switch(true){
+    case depth > 80:
+      return "#993300";
+    case depth > 60:
+      return "#ff3300";
+    case depth > 40:
+      return "#ff6600";
+    case depth > 20:
+      return "#ff6666";
+    case depth > 10:
+      return "#ff9999";
+    default:
+      return "#ffcccc";
+
+  }
+}
+
+function chooseRadius(m){
+  console.log("Mag");
+  console.log(mag);
+  if (m == 0){
+    var mag = 1;
+    return mag;
+  }
+  var mag = m * 3.5;
+  return mag;
+}
+
+
 // Getting our GeoJSON data
 d3.json(link).then(function(data) {
   // Creating a GeoJSON layer with the retrieved data
   console.log(data.features);
 
-  function chooseColor(depth){
-    switch(true){
-      case depth > 80:
-        return "#993300";
-      case depth > 60:
-        return "#ff3300";
-      case depth > 40:
-        return "#ff6600";
-      case depth > 20:
-        return "#ff6666";
-      case depth > 10:
-        return "#ff9999";
-      default:
-        return "#ffcccc";
 
-    }
-  }
 
-  function chooseRadius(m){
-    if (m == 0){
-      var mag = 1;
-      return mag;
-    }
-    var mag = m * 3.5;
-    return mag;
-  }
+  // function fillStyle(f){
+  //   console.log("hey");
+  //   console.log(f);
+  //   return {
+  //     opacity: 1,
+  //     fillOpacity: 1,
+  //     fillColor: chooseColor(f.geometry.coordinates[2]),
+  //     color: "#000000",
+  //     radius: chooseRadius(f.properties.mag),
+  //     stroke: true,
+  //     weight: 0.5
+  //   };
+  // }
+  // let styles = [];
+  // for (var i=0; i < data.features.length; i++){
+  //   styles.push(fillStyle(data.features[i]));
 
-  function fillStyle(f){
-    return {
-      opacity: 1,
+  // }
+  L.geoJson(data, {
+    pointToLayer: function(features, coords){
+      return L.circleMarker(coords);
+    },
+
+    style: function(f){
+      console.log("F");
+      console.log(f);
+      return {
+      opacity: 0.6,
       fillOpacity: 1,
       fillColor: chooseColor(f.geometry.coordinates[2]),
       color: "#000000",
       radius: chooseRadius(f.properties.mag),
       stroke: true,
       weight: 0.5
-    };
-  }
-
-  for (var i=0; i < data.features.length; i++){
-  L.geoJson(data, {
-    pointToLayer: function(features, coords){
-      return L.circleMarker(coords);
+      };
     },
-
-    style: fillStyle(data.features[i]) ,
 
     onEachFeature: function(features, l){
       l.bindPopup("Located at: " + features.properties.place + "<br>Magnitude: " + features.properties.mag + "<br>Alert: " + features.properties.alert);
     }
   }).addTo(myMap);
-  }
+  
 
 
   // Legend
