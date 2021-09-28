@@ -12,12 +12,10 @@ var myMap = L.map("map", {
   // Use this link to get the GeoJSON data.
 var link = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson";
 
-
-
-
+// Return varied shade depending on earthquake depth
 function chooseColor(depth){
-  console.log("depth: ");
-  console.log(depth);
+ // console.log("depth: ");
+ // console.log(depth);
   switch(true){
     case depth > 80:
       return "#993300";
@@ -35,14 +33,15 @@ function chooseColor(depth){
   }
 }
 
+// Larger magnitude returns larger marker radius
 function chooseRadius(m){
   console.log("Mag");
-  console.log(mag);
+  console.log(m);
   if (m == 0){
     var mag = 1;
     return mag;
   }
-  var mag = m * 3.5;
+  var mag = m * 3.75;
   return mag;
 }
 
@@ -52,34 +51,17 @@ d3.json(link).then(function(data) {
   // Creating a GeoJSON layer with the retrieved data
   console.log(data.features);
 
-
-
-  // function fillStyle(f){
-  //   console.log("hey");
-  //   console.log(f);
-  //   return {
-  //     opacity: 1,
-  //     fillOpacity: 1,
-  //     fillColor: chooseColor(f.geometry.coordinates[2]),
-  //     color: "#000000",
-  //     radius: chooseRadius(f.properties.mag),
-  //     stroke: true,
-  //     weight: 0.5
-  //   };
-  // }
-  // let styles = [];
-  // for (var i=0; i < data.features.length; i++){
-  //   styles.push(fillStyle(data.features[i]));
-
-  // }
   L.geoJson(data, {
+
+    // Add circle marker
+    // https://stackoverflow.com/questions/25364072/how-to-use-circle-markers-with-leaflet-tilelayer-geojson
     pointToLayer: function(features, coords){
       return L.circleMarker(coords);
     },
 
+    // Style the marker based on magnitude and depth of earthquake
     style: function(f){
-      console.log("F");
-      console.log(f);
+    
       return {
       opacity: 0.6,
       fillOpacity: 1,
@@ -91,6 +73,7 @@ d3.json(link).then(function(data) {
       };
     },
 
+    // Offer additional quake info when marker is clicked
     onEachFeature: function(features, l){
       l.bindPopup("Located at: " + features.properties.place + "<br>Magnitude: " + features.properties.mag + "<br>Alert: " + features.properties.alert);
     }
@@ -107,8 +90,6 @@ d3.json(link).then(function(data) {
     let depthrange = [0, 10, 20, 40, 60, 80];
     let colors = ["#ffcccc", "#ff9999", "#ff6666", "#ff6600","#ff3300", "#993300"];
     var div = L.DomUtil.create("div", "legend");
-
-    
 
     // Insert depth range colors into legend HTML
     for (var i = 0; i<depthrange.length -1 ; i++) {
