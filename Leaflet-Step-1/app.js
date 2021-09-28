@@ -1,7 +1,7 @@
 // Creating the map object
 var myMap = L.map("map", {
-    center: [40, -50],
-    zoom: 2.45
+    center: [40, 0],
+    zoom: 2.3
   });
   
   // Adding the tile layer
@@ -35,8 +35,8 @@ function chooseColor(depth){
 
 // Larger magnitude returns larger marker radius
 function chooseRadius(m){
-  console.log("Mag");
-  console.log(m);
+  // console.log("Mag");
+  // console.log(m);
   if (m == 0){
     var mag = 1;
     return mag;
@@ -49,8 +49,6 @@ function chooseRadius(m){
 // Getting our GeoJSON data
 d3.json(link).then(function(data) {
   // Creating a GeoJSON layer with the retrieved data
-  console.log(data.features);
-
   L.geoJson(data, {
 
     // Add circle marker
